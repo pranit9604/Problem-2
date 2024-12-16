@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title> Random Characters</title>
+    <style>
+      table {
+        width: 50%;
+        margin: 20px auto;
+        border-collapse: collapse;
+      }
+      th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+      }
+      button {
+        padding: 5px 10px;
+        cursor: pointer;
+      }
+      .delete-button {
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        border-radius: 4px;
+      }
+      .delete-button:hover {
+        background-color: #a71d2a;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <button id="addRecordButton">Add record</button>
+    </div>
+    <table id="userTable">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <script>
+      document
+        .getElementById("addRecordButton")
+        .addEventListener("click", addRecord);
+
+      async function addRecord() {
+        const randomId = Math.floor(Math.random() * 82 + 1);
+        const url = `https://swapi.dev/api/people/${randomId}/`;
+
+        try {
+          console.log("Fetching data for URL:", url); 
+          const response = await fetch(url);
+          const data = await response.json(); 
+
+          if (response.ok) {
+            const name = data.name;
+
+         
+            const tableBody = document.getElementById("userTable").querySelector("tbody");
+
+          
+            const row = document.createElement("tr");
+            const nameCell = document.createElement("td");
+            const actionCell = document.createElement("td");
+            const deleteButton = document.createElement("button");
+
+            nameCell.textContent = name;
+            deleteButton.textContent = "Delete";
+            deleteButton.classList.add("delete-button");
+            deleteButton.addEventListener("click", () => row.remove());
+
+            actionCell.appendChild(deleteButton);
+            row.appendChild(nameCell);
+            row.appendChild(actionCell);
+
+            tableBody.appendChild(row);
+          } else {
+            console.error("Error: " + data.detail);
+           
+          }
+        } catch (error) {
+          console.error("Error fetching data:", error);
+          
+        }
+      }
+    </script>
+  </body>
+</html>
